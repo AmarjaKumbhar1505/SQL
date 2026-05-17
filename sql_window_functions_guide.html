@@ -1,0 +1,413 @@
+
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  .section { margin-bottom: 20px; }
+  .concept-box { background: var(--color-background-secondary); border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; border: 0.5px solid var(--color-border-tertiary); }
+  .concept-title { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 6px; }
+  .concept-desc { font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; }
+  .fn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+  .fn-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: 10px; padding: 12px 14px; cursor: pointer; transition: border-color 0.15s; }
+  .fn-card:hover { border-color: var(--color-border-primary); }
+  .fn-card.active { border-color: #185FA5; background: #E6F1FB; }
+  .fn-name { font-size: 13px; font-weight: 500; color: var(--color-text-primary); font-family: var(--font-mono); }
+  .fn-card.active .fn-name { color: #0C447C; }
+  .fn-desc { font-size: 12px; color: var(--color-text-secondary); margin-top: 3px; line-height: 1.5; }
+  .fn-card.active .fn-desc { color: #185FA5; }
+  .demo-panel { background: var(--color-background-secondary); border-radius: 12px; padding: 14px 16px; border: 0.5px solid var(--color-border-tertiary); }
+  .demo-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 10px; }
+  .sql-block { background: var(--color-background-primary); border-radius: 8px; padding: 10px 12px; font-family: var(--font-mono); font-size: 12px; color: var(--color-text-primary); border: 0.5px solid var(--color-border-tertiary); margin-bottom: 10px; line-height: 1.7; white-space: pre; overflow-x: auto; }
+  .kw { color: #185FA5; font-weight: 500; }
+  .fn-color { color: #854F0B; font-weight: 500; }
+  .tbl { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .tbl th { font-size: 11px; font-weight: 500; color: var(--color-text-secondary); text-align: left; padding: 5px 8px; border-bottom: 0.5px solid var(--color-border-secondary); }
+  .tbl td { padding: 5px 8px; color: var(--color-text-primary); border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .tbl tr:last-child td { border-bottom: none; }
+  .highlight-row td { background: #FAEEDA; color: #633806; font-weight: 500; }
+  .result-col { color: #185FA5; font-weight: 500; }
+  .tag { font-size: 11px; padding: 2px 8px; border-radius: 20px; display: inline-block; margin-bottom: 8px; }
+  .tag-rank { background: #EEEDFE; color: #3C3489; }
+  .tag-agg { background: #E1F5EE; color: #085041; }
+  .tag-val { background: #FAEEDA; color: #633806; }
+  .tab-row { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+  .tab-btn { font-size: 12px; padding: 5px 12px; border-radius: 20px; border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); color: var(--color-text-secondary); cursor: pointer; }
+  .tab-btn.active { background: #E6F1FB; color: #0C447C; border-color: #185FA5; }
+  .anatomy-row { display: flex; flex-wrap: wrap; gap: 0; font-family: var(--font-mono); font-size: 12px; background: var(--color-background-primary); border-radius: 8px; padding: 10px 12px; border: 0.5px solid var(--color-border-tertiary); margin-bottom: 8px; line-height: 2; }
+  .part { padding: 1px 6px; border-radius: 4px; cursor: default; }
+  .part-fn { background: #FAEEDA; color: #633806; }
+  .part-over { background: #E6F1FB; color: #0C447C; }
+  .part-part { background: #EEEDFE; color: #3C3489; }
+  .part-ord { background: #E1F5EE; color: #085041; }
+  .part-plain { color: var(--color-text-secondary); }
+  .legend-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--color-text-secondary); }
+  .legend-dot { width: 10px; height: 10px; border-radius: 3px; }
+</style>
+
+<div style="padding: 4px 0 0;">
+
+  <div class="section">
+    <div class="concept-box">
+      <div class="concept-title">The core idea — what is a window?</div>
+      <div class="concept-desc">Normal <code>GROUP BY</code> collapses rows into one. A window function looks at a "window" of related rows — but keeps every row. You get the calculation AND the original row together.</div>
+    </div>
+    <div class="anatomy-row">
+      <span class="part part-fn">ROW_NUMBER()</span>
+      <span class="part part-plain">&nbsp;</span>
+      <span class="part part-over">OVER</span>
+      <span class="part part-plain">&nbsp;(</span>
+      <span class="part part-part">PARTITION BY dept</span>
+      <span class="part part-plain">&nbsp;</span>
+      <span class="part part-ord">ORDER BY salary DESC</span>
+      <span class="part part-plain">)</span>
+    </div>
+    <div class="legend-row">
+      <div class="legend-item"><div class="legend-dot" style="background:#FAEEDA;border:1px solid #854F0B;"></div> Function</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#E6F1FB;border:1px solid #185FA5;"></div> OVER — opens the window</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#EEEDFE;border:1px solid #534AB7;"></div> PARTITION BY — group within window</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#E1F5EE;border:1px solid #0F6E56;"></div> ORDER BY — sort within window</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="tab-row">
+      <button class="tab-btn active" onclick="showTab('rank')">Ranking</button>
+      <button class="tab-btn" onclick="showTab('agg')">Aggregate</button>
+      <button class="tab-btn" onclick="showTab('val')">Value</button>
+    </div>
+
+    <div id="tab-rank">
+      <div class="fn-grid">
+        <div class="fn-card active" id="fn-rn" onclick="selectFn('rn')">
+          <div class="fn-name">ROW_NUMBER()</div>
+          <div class="fn-desc">Unique number per row — no ties ever</div>
+        </div>
+        <div class="fn-card" id="fn-rk" onclick="selectFn('rk')">
+          <div class="fn-name">RANK()</div>
+          <div class="fn-desc">Tied rows get same rank, next skipped</div>
+        </div>
+        <div class="fn-card" id="fn-dr" onclick="selectFn('dr')">
+          <div class="fn-name">DENSE_RANK()</div>
+          <div class="fn-desc">Tied rows same rank, no gap after</div>
+        </div>
+        <div class="fn-card" id="fn-nt" onclick="selectFn('nt')">
+          <div class="fn-name">NTILE(n)</div>
+          <div class="fn-desc">Splits rows into n equal buckets</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-agg" style="display:none;">
+      <div class="fn-grid">
+        <div class="fn-card active" id="fn-sm" onclick="selectFn('sm')">
+          <div class="fn-name">SUM() OVER()</div>
+          <div class="fn-desc">Running total or group total</div>
+        </div>
+        <div class="fn-card" id="fn-av" onclick="selectFn('av')">
+          <div class="fn-name">AVG() OVER()</div>
+          <div class="fn-desc">Moving or group average</div>
+        </div>
+        <div class="fn-card" id="fn-cn" onclick="selectFn('cn')">
+          <div class="fn-name">COUNT() OVER()</div>
+          <div class="fn-desc">Count per partition on every row</div>
+        </div>
+        <div class="fn-card" id="fn-mx" onclick="selectFn('mx')">
+          <div class="fn-name">MAX() OVER()</div>
+          <div class="fn-desc">Max value from partition on every row</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-val" style="display:none;">
+      <div class="fn-grid">
+        <div class="fn-card active" id="fn-lg" onclick="selectFn('lg')">
+          <div class="fn-name">LAG(col, n)</div>
+          <div class="fn-desc">Value from n rows before current</div>
+        </div>
+        <div class="fn-card" id="fn-ld" onclick="selectFn('ld')">
+          <div class="fn-name">LEAD(col, n)</div>
+          <div class="fn-desc">Value from n rows after current</div>
+        </div>
+        <div class="fn-card" id="fn-fv" onclick="selectFn('fv')">
+          <div class="fn-name">FIRST_VALUE()</div>
+          <div class="fn-desc">First value in the window frame</div>
+        </div>
+        <div class="fn-card" id="fn-lv" onclick="selectFn('lv')">
+          <div class="fn-name">LAST_VALUE()</div>
+          <div class="fn-desc">Last value in the window frame</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo-panel" id="demo-panel"></div>
+  </div>
+
+  <button onclick="sendPrompt('Give me 5 practice problems on window functions with solutions')" style="width:100%;padding:10px;border-radius:8px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-primary);font-size:13px;cursor:pointer;margin-top:4px;">
+    Give me practice problems on window functions ↗
+  </button>
+</div>
+
+<script>
+const demos = {
+  rn: {
+    tag: 'rank', label: 'ROW_NUMBER() — unique rank per row',
+    sql: `<span class="kw">SELECT</span> name, dept, salary,
+  <span class="fn-color">ROW_NUMBER()</span> <span class="kw">OVER</span> (
+    <span class="kw">PARTITION BY</span> dept
+    <span class="kw">ORDER BY</span> salary <span class="kw">DESC</span>
+  ) <span class="kw">AS</span> row_num
+<span class="kw">FROM</span> employees;`,
+    headers: ['name','dept','salary','row_num'],
+    rows: [
+      ['Arjun','Sales','90000','1'],
+      ['Priya','Sales','80000','2'],
+      ['Meera','Sales','80000','3'],
+      ['Rahul','Tech','95000','1'],
+      ['Sana','Tech','85000','2'],
+    ],
+    highlight: [],
+    note: 'Ties (Priya & Meera, same salary) still get different numbers — 2 and 3.'
+  },
+  rk: {
+    tag: 'rank', label: 'RANK() — ties get same rank, next rank skipped',
+    sql: `<span class="kw">SELECT</span> name, dept, salary,
+  <span class="fn-color">RANK()</span> <span class="kw">OVER</span> (
+    <span class="kw">PARTITION BY</span> dept
+    <span class="kw">ORDER BY</span> salary <span class="kw">DESC</span>
+  ) <span class="kw">AS</span> rnk
+<span class="kw">FROM</span> employees;`,
+    headers: ['name','dept','salary','rnk'],
+    rows: [
+      ['Arjun','Sales','90000','1'],
+      ['Priya','Sales','80000','2'],
+      ['Meera','Sales','80000','2'],
+      ['Kiran','Sales','70000','4'],
+      ['Rahul','Tech','95000','1'],
+    ],
+    highlight: [1,2],
+    note: 'Priya & Meera both rank 2. Rank 3 is skipped — next is 4.'
+  },
+  dr: {
+    tag: 'rank', label: 'DENSE_RANK() — ties same rank, no gap',
+    sql: `<span class="kw">SELECT</span> name, dept, salary,
+  <span class="fn-color">DENSE_RANK()</span> <span class="kw">OVER</span> (
+    <span class="kw">PARTITION BY</span> dept
+    <span class="kw">ORDER BY</span> salary <span class="kw">DESC</span>
+  ) <span class="kw">AS</span> d_rnk
+<span class="kw">FROM</span> employees;`,
+    headers: ['name','dept','salary','d_rnk'],
+    rows: [
+      ['Arjun','Sales','90000','1'],
+      ['Priya','Sales','80000','2'],
+      ['Meera','Sales','80000','2'],
+      ['Kiran','Sales','70000','3'],
+      ['Rahul','Tech','95000','1'],
+    ],
+    highlight: [1,2],
+    note: 'Priya & Meera both rank 2. Next is 3 — no gap unlike RANK().'
+  },
+  nt: {
+    tag: 'rank', label: 'NTILE(4) — split into 4 equal buckets',
+    sql: `<span class="kw">SELECT</span> name, salary,
+  <span class="fn-color">NTILE</span>(4) <span class="kw">OVER</span> (
+    <span class="kw">ORDER BY</span> salary <span class="kw">DESC</span>
+  ) <span class="kw">AS</span> quartile
+<span class="kw">FROM</span> employees;`,
+    headers: ['name','salary','quartile'],
+    rows: [
+      ['Rahul','95000','1'],
+      ['Arjun','90000','1'],
+      ['Sana','85000','2'],
+      ['Priya','80000','2'],
+      ['Meera','80000','3'],
+      ['Kiran','70000','4'],
+    ],
+    highlight: [],
+    note: 'NTILE(4) assigns each row to a quartile (1=top 25%, 4=bottom 25%).'
+  },
+  sm: {
+    tag: 'agg', label: 'SUM() OVER() — running total',
+    sql: `<span class="kw">SELECT</span> month, revenue,
+  <span class="fn-color">SUM</span>(revenue) <span class="kw">OVER</span> (
+    <span class="kw">ORDER BY</span> month
+  ) <span class="kw">AS</span> running_total
+<span class="kw">FROM</span> sales;`,
+    headers: ['month','revenue','running_total'],
+    rows: [
+      ['Jan','10000','10000'],
+      ['Feb','15000','25000'],
+      ['Mar','12000','37000'],
+      ['Apr','18000','55000'],
+    ],
+    highlight: [3],
+    note: 'Each row shows the cumulative sum up to that point — great for running totals.'
+  },
+  av: {
+    tag: 'agg', label: 'AVG() OVER() — group average on every row',
+    sql: `<span class="kw">SELECT</span> name, dept, salary,
+  <span class="fn-color">AVG</span>(salary) <span class="kw">OVER</span> (
+    <span class="kw">PARTITION BY</span> dept
+  ) <span class="kw">AS</span> dept_avg
+<span class="kw">FROM</span> employees;`,
+    headers: ['name','dept','salary','dept_avg'],
+    rows: [
+      ['Arjun','Sales','90000','80000'],
+      ['Priya','Sales','70000','80000'],
+      ['Rahul','Tech','95000','90000'],
+      ['Sana','Tech','85000','90000'],
+    ],
+    highlight: [],
+    note: 'Unlike GROUP BY, every row is preserved. The dept avg appears next to each employee.'
+  },
+  cn: {
+    tag: 'agg', label: 'COUNT() OVER() — team size on every row',
+    sql: `<span class="kw">SELECT</span> name, dept,
+  <span class="fn-color">COUNT</span>(*) <span class="kw">OVER</span> (
+    <span class="kw">PARTITION BY</span> dept
+  ) <span class="kw">AS</span> team_size
+<span class="kw">FROM</span> employees;`,
+    headers: ['name','dept','team_size'],
+    rows: [
+      ['Arjun','Sales','3'],
+      ['Priya','Sales','3'],
+      ['Meera','Sales','3'],
+      ['Rahul','Tech','2'],
+      ['Sana','Tech','2'],
+    ],
+    highlight: [],
+    note: 'Each employee sees the total count of their own department — without collapsing rows.'
+  },
+  mx: {
+    tag: 'agg', label: 'MAX() OVER() — highest salary in dept on every row',
+    sql: `<span class="kw">SELECT</span> name, dept, salary,
+  <span class="fn-color">MAX</span>(salary) <span class="kw">OVER</span> (
+    <span class="kw">PARTITION BY</span> dept
+  ) <span class="kw">AS</span> top_salary
+<span class="kw">FROM</span> employees;`,
+    headers: ['name','dept','salary','top_salary'],
+    rows: [
+      ['Arjun','Sales','90000','90000'],
+      ['Priya','Sales','80000','90000'],
+      ['Rahul','Tech','95000','95000'],
+      ['Sana','Tech','85000','95000'],
+    ],
+    highlight: [],
+    note: 'Useful for comparing each employee\'s salary against the best in their department.'
+  },
+  lg: {
+    tag: 'val', label: 'LAG() — compare current row to previous row',
+    sql: `<span class="kw">SELECT</span> month, revenue,
+  <span class="fn-color">LAG</span>(revenue, 1) <span class="kw">OVER</span> (
+    <span class="kw">ORDER BY</span> month
+  ) <span class="kw">AS</span> prev_month
+<span class="kw">FROM</span> sales;`,
+    headers: ['month','revenue','prev_month'],
+    rows: [
+      ['Jan','10000','NULL'],
+      ['Feb','15000','10000'],
+      ['Mar','12000','15000'],
+      ['Apr','18000','12000'],
+    ],
+    highlight: [0],
+    note: 'First row has NULL — no previous row. Classic use: month-over-month comparison.'
+  },
+  ld: {
+    tag: 'val', label: 'LEAD() — look ahead to the next row',
+    sql: `<span class="kw">SELECT</span> month, revenue,
+  <span class="fn-color">LEAD</span>(revenue, 1) <span class="kw">OVER</span> (
+    <span class="kw">ORDER BY</span> month
+  ) <span class="kw">AS</span> next_month
+<span class="kw">FROM</span> sales;`,
+    headers: ['month','revenue','next_month'],
+    rows: [
+      ['Jan','10000','15000'],
+      ['Feb','15000','12000'],
+      ['Mar','12000','18000'],
+      ['Apr','18000','NULL'],
+    ],
+    highlight: [3],
+    note: 'Last row has NULL — no next row. Use LEAD to predict or compare upcoming values.'
+  },
+  fv: {
+    tag: 'val', label: 'FIRST_VALUE() — first value in the partition',
+    sql: `<span class="kw">SELECT</span> name, dept, salary,
+  <span class="fn-color">FIRST_VALUE</span>(name) <span class="kw">OVER</span> (
+    <span class="kw">PARTITION BY</span> dept
+    <span class="kw">ORDER BY</span> salary <span class="kw">DESC</span>
+  ) <span class="kw">AS</span> top_earner
+<span class="kw">FROM</span> employees;`,
+    headers: ['name','dept','salary','top_earner'],
+    rows: [
+      ['Arjun','Sales','90000','Arjun'],
+      ['Priya','Sales','80000','Arjun'],
+      ['Meera','Sales','70000','Arjun'],
+      ['Rahul','Tech','95000','Rahul'],
+      ['Sana','Tech','85000','Rahul'],
+    ],
+    highlight: [],
+    note: 'Every row in the partition sees the first value — the top earner in this case.'
+  },
+  lv: {
+    tag: 'val', label: 'LAST_VALUE() — last value in the window frame',
+    sql: `<span class="kw">SELECT</span> name, dept, salary,
+  <span class="fn-color">LAST_VALUE</span>(name) <span class="kw">OVER</span> (
+    <span class="kw">PARTITION BY</span> dept
+    <span class="kw">ORDER BY</span> salary <span class="kw">DESC</span>
+    ROWS BETWEEN UNBOUNDED PRECEDING
+      AND UNBOUNDED FOLLOWING
+  ) <span class="kw">AS</span> lowest_earner
+<span class="kw">FROM</span> employees;`,
+    headers: ['name','dept','salary','lowest_earner'],
+    rows: [
+      ['Arjun','Sales','90000','Meera'],
+      ['Priya','Sales','80000','Meera'],
+      ['Meera','Sales','70000','Meera'],
+      ['Rahul','Tech','95000','Sana'],
+      ['Sana','Tech','85000','Sana'],
+    ],
+    highlight: [],
+    note: 'LAST_VALUE needs ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING — otherwise it only looks at the current frame.'
+  }
+};
+
+let currentFn = 'rn';
+
+function renderDemo(key) {
+  const d = demos[key];
+  const tagClass = d.tag === 'rank' ? 'tag-rank' : d.tag === 'agg' ? 'tag-agg' : 'tag-val';
+  const tagLabel = d.tag === 'rank' ? 'Ranking' : d.tag === 'agg' ? 'Aggregate' : 'Value';
+  let rows = d.rows.map((r, i) => {
+    const cls = d.highlight.includes(i) ? 'highlight-row' : '';
+    const cells = r.map((c, j) => `<td class="${j === r.length-1 ? 'result-col' : ''}">${c}</td>`).join('');
+    return `<tr class="${cls}">${cells}</tr>`;
+  }).join('');
+  const heads = d.headers.map((h,i) => `<th>${h}${i===d.headers.length-1?' ← result':''}</th>`).join('');
+  document.getElementById('demo-panel').innerHTML = `
+    <span class="tag ${tagClass}">${tagLabel}</span>
+    <div class="demo-title">${d.label}</div>
+    <div class="sql-block">${d.sql}</div>
+    <table class="tbl"><thead><tr>${heads}</tr></thead><tbody>${rows}</tbody></table>
+    <div style="font-size:12px;color:var(--color-text-secondary);margin-top:8px;line-height:1.6;">${d.note}</div>
+  `;
+}
+
+function selectFn(key) {
+  document.querySelectorAll('.fn-card').forEach(c => c.classList.remove('active'));
+  document.getElementById('fn-' + key).classList.add('active');
+  currentFn = key;
+  renderDemo(key);
+}
+
+function showTab(tab) {
+  ['rank','agg','val'].forEach(t => {
+    document.getElementById('tab-'+t).style.display = t===tab ? '' : 'none';
+  });
+  document.querySelectorAll('.tab-btn').forEach((b,i) => {
+    b.classList.toggle('active', ['rank','agg','val'][i] === tab);
+  });
+  const first = tab==='rank' ? 'rn' : tab==='agg' ? 'sm' : 'lg';
+  selectFn(first);
+}
+
+renderDemo('rn');
+</script>
